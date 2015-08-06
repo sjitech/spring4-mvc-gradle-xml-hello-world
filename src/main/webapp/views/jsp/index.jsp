@@ -5,10 +5,14 @@
 <head>
 <title>Gradle + Spring MVC</title>
 
-<spring:url value="/resources/core/css/hello.css" var="coreCss" />
-<spring:url value="/resources/core/css/bootstrap.min.css" var="bootstrapCss" />
+<spring:url value="/resources/css/hello.css" var="coreCss" />
+<spring:url value="/resources/css/bootstrap.css" var="bootstrapCss" />
+<spring:url value="/resources/css/bootstrap-theme.css" var="bootstrapThemeCss" />
+
 <link href="${bootstrapCss}" rel="stylesheet" />
 <link href="${coreCss}" rel="stylesheet" />
+<link href="${bootstrapThemeCss}" rel="stylesheet" />
+
 </head>
 
 <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -70,12 +74,13 @@
 	</footer>
 </div>
 
-<spring:url value="/resources/core/css/hello.js" var="coreJs" />
-<spring:url value="/resources/core/css/bootstrap.min.js" var="bootstrapJs" />
+<spring:url value="/resources/js/jquery-2.1.4.js" var="jqueryJs" />
+<spring:url value="/resources/js/bootstrap.js" var="bootstrapJs" />
+<spring:url value="/resources/js/hello.js" var="coreJs" />
 
-<script src="${coreJs}"></script>
+<script src="${jqueryJs}"></script>
 <script src="${bootstrapJs}"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script src="${coreJs}"></script>
 
 </body>
 </html>
