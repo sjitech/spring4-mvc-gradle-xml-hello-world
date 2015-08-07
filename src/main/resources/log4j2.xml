@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="debug">
     <Appenders>
-        <Console name="CONSOLE" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{DEFAULT} | [%t] | %-5level | %c{36} | %msg%n"/>
         </Console>
-        <File name="TEMP" fileName="/Users/wang/temp/logs/bldemo.log">
-            <PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/>
-        </File>
+
+        <RollingFile name="RollingFile" fileName="/Users/wang/temp/logs/bldemo.log"
+            filePattern="/Users/wang/temp/logs/$${date:yyyy-MM}/bldemo-%d{MM-dd-yyyy}-%i.log.gz">
+            <PatternLayout>
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} | [%t] | %-5level | %c{36} | %msg%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="20 MB"/>
+            </Policies>
+        </RollingFile>
+
         <Async name="ASYNC">
-            <AppenderRef ref="TEMP"/>
-            <AppenderRef ref="CONSOLE"/>
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="RollingFile"/>
         </Async>
     </Appenders>
     <Loggers>
