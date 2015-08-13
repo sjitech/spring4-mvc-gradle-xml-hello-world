@@ -5,8 +5,8 @@
             <PatternLayout pattern="%d{DEFAULT} | [%t] | %-5level | %c{36} | %msg%n"/>
         </Console>
 
-        <RollingFile name="RollingFile" fileName="/Users/wang/temp/logs/bldemo.log"
-            filePattern="/Users/wang/temp/logs/$${date:yyyy-MM}/bldemo-%d{MM-dd-yyyy}-%i.log.gz">
+        <RollingFile name="RollingFile" fileName="/Users/whd/temp/logs/bldemo.log"
+            filePattern="/Users/whd/temp/logs/$${date:yyyy-MM}/bldemo-%d{MM-dd-yyyy}-%i.log.gz">
             <PatternLayout>
                 <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} | [%t] | %-5level | %c{36} | %msg%n</Pattern>
             </PatternLayout>

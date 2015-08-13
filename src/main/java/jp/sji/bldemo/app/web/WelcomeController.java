@@ -1,4 +1,4 @@
-package com.mkyong.helloworld.web;
+package jp.sji.bldemo.app.web;
 
 import java.util.Map;
 
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.mkyong.helloworld.service.HelloWorldService;
+import jp.sji.bldemo.app.service.HelloWorldService;
 
 @Controller
 public class WelcomeController {

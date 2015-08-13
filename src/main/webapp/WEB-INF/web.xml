@@ -5,9 +5,6 @@
                              http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
 
-    <display-name>BL demo project with gradle + spring4 xml config + gcp</display-name>
-    <description>BL demo web application</description>
-
     <!-- For log4j2 init and disable log4j version 1 init-->
     <context-param>
         <param-name>isLog4jAutoInitializationDisabled</param-name>
