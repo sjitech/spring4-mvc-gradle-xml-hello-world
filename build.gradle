@@ -1,6 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'war'
 apply plugin: 'idea'
+apply plugin: 'eclipse-wtp'
 
 // JDK 8
 sourceCompatibility = 1.8
@@ -42,6 +43,14 @@ war {
     version  = '0.1-SNAPSHOT'
 }
 
+eclipse {
+  wtp {
+    component {
+      contextPath = 'bldemo'
+    }
+  }
+}
+
 task wrapper(type: Wrapper) {
     gradleVersion = '2.5'
 }
@@ -52,19 +61,33 @@ task exploded_war(type: Copy) {
     with war
 }
 
-task diff_update_exploded(type: Copy) {
+task diff_update_exploded() {
     description "Copy jsp and static resource to $buildDir/exploded"
-    from('src/main/webapp') {
-        include '**/*.jsp'
-        include '**/*.css'
-        include '**/*.js'
-        include '**/*.properties'
-        include '**/*.png'
-        include '**/*.jpeg'
-        include '**/*.jpg'
-        include '**/*.gif'
+
+    // def user_home_dir = System.getenv('HOME')
+
+    copy {
+        from('src/main/resources') {
+            include 'log4j2.xml'
+        }
+        into("$buildDir/exploded/WEB-INF/classes")
     }
-    into "$buildDir/exploded"
+
+    copy {
+        from('src/main/webapp') {
+            include '**/*.jsp'
+            include '**/*.css'
+            include '**/*.js'
+            include '**/*.properties'
+            include '**/*.png'
+            include '**/*.jpeg'
+            include '**/*.jpg'
+            include '**/*.gif'
+        }
+        into "$buildDir/exploded"
+    }
+
 }
 
 war.dependsOn exploded_war
+

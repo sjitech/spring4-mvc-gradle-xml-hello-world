@@ -38,6 +38,13 @@
             <param-value>/WEB-INF/spring-mvc-config.xml</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
+
+        <multipart-config>
+            <location>/Users/wang/temp/tomcat_upload_temp</location>
+            <max-file-size>1000000</max-file-size>
+            <max-request-size>1000000</max-request-size>
+            <file-size-threshold>10000</file-size-threshold>
+        </multipart-config>
     </servlet>
 
     <servlet-mapping>
