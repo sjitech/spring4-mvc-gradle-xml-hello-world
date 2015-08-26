@@ -55,16 +55,37 @@ task wrapper(type: Wrapper) {
     gradleVersion = '2.5'
 }
 
-task exploded_war(type: Copy) {
+task expand_web_xml_vars() {
+    description 'Expand user home variable in web.xml'
+
+    def user_home_dir = System.getenv('HOME')
+
+    delete "$buildDir/exploded/WEB-INF/web.xml"
+
+    copy {
+        from('src/main/webapp/WEB-INF') {
+            include 'web.xml'
+            expand(user_home_dir: user_home_dir)
+        }
+        into("$buildDir/exploded/WEB-INF")
+    }
+}
+
+task exploded_create(type: Copy) {
     description 'Generate exploded war directory for web app'
     into "$buildDir/exploded"
     with war
 }
 
-task diff_update_exploded() {
-    description "Copy jsp and static resource to $buildDir/exploded"
+exploded_create << {
+    tasks.expand_web_xml_vars.execute()
+}
 
-    // def user_home_dir = System.getenv('HOME')
+war.dependsOn exploded_create
+
+
+task exploded_update(dependsOn: expand_web_xml_vars) {
+    description "Copy jsp and static resource to $buildDir/exploded"
 
     copy {
         from('src/main/resources') {
@@ -89,5 +110,4 @@ task diff_update_exploded() {
 
 }
 
-war.dependsOn exploded_war
 

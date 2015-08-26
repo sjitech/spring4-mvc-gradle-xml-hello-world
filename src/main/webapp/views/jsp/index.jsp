@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Gradle + Spring MVC</title>
+<title>GCP demo project by spring 4 MVC with gradle</title>
 
 <spring:url value="/resources/css/hello.css" var="coreCss" />
 <spring:url value="/resources/css/bootstrap.css" var="bootstrapCss" />
@@ -16,62 +16,60 @@
 </head>
 
 <nav class="navbar navbar-inverse navbar-fixed-top">
-	<div class="container">
-		<div class="navbar-header">
-			<a class="navbar-brand" href="#">Project Name</a>
-		</div>
-	</div>
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">GCP demo project by spring 4 MVC with gradle</a>
+        </div>
+    </div>
 </nav>
 
 <div class="jumbotron">
-	<div class="container">
-		<h1>${title}</h1>
-		<p>
-			<c:if test="${not empty msg}">
-				Hello ${msg}
-			</c:if>
+    <div class="container">
+        <h1>${title}</h1>
+        <p>
+            <c:if test="${not empty msg}">
+                Hello ${msg}
+            </c:if>
 
-			<c:if test="${empty msg}">
-				Welcome Welcome!
-			</c:if>
-		</p>
-		<p>
-			<a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
-		</p>
-	</div>
+            <c:if test="${empty msg}">
+                Welcome to spring 4 MVC on Google cloud platform!
+            </c:if>
+        </p>
+    </div>
 </div>
 
 <div class="container">
 
-	<div class="row">
-		<div class="col-md-4">
-			<h2>Heading</h2>
-			<p>ABC</p>
-			<p>
-				<a class="btn btn-default" href="#" role="button">View details</a>
-			</p>
-		</div>
-		<div class="col-md-4">
-			<h2>Heading</h2>
-			<p>ABC</p>
-			<p>
-				<a class="btn btn-default" href="#" role="button">View details</a>
-			</p>
-		</div>
-		<div class="col-md-4">
-			<h2>Heading</h2>
-			<p>ABC</p>
-			<p>
-				<a class="btn btn-default" href="#" role="button">View details</a>
-			</p>
-		</div>
-	</div>
+    <div class="row">
+        <div class="col-md-4">
+            <h2>Upload Sample</h2>
+            <p>Upload one or more files to server.</p>
+            <p>Confirm upload temp directory of servlet container.</p>
+            <p>
+                <a class="btn btn-default" href="#" role="button">View details</a>
+            </p>
+        </div>
+        <div class="col-md-4">
+            <h2>Heading</h2>
+            <p>ABC</p>
+            <p>
+                <a class="btn btn-default" href="#" role="button">View details</a>
+            </p>
+        </div>
+        <div class="col-md-4">
+            <h2>Heading</h2>
+            <p>ABC</p>
+            <p>
+                <a class="btn btn-default" href="#" role="button">View details</a>
+            </p>
+        </div>
+    </div>
 
 
-	<hr>
-	<footer>
-		<p>&copy; Mkyong.com 2015</p>
-	</footer>
+    <hr>
+    <footer>
+        <p>&copy; Mkyong.com 2015</p>
+    </footer>
 </div>
 
 <spring:url value="/resources/js/jquery-2.1.4.js" var="jqueryJs" />
