@@ -68,7 +68,7 @@
 
     <hr>
     <footer>
-        <p>&copy; Mkyong.com 2015</p>
+        <p>&copy; SJI Inc. 2015</p>
     </footer>
 </div>
 

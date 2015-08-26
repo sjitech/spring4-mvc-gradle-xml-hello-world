@@ -38,11 +38,6 @@ dependencies {
 
 }
 
-war {
-    baseName = 'bldemo'
-    version  = '0.1-SNAPSHOT'
-}
-
 eclipse {
   wtp {
     component {
@@ -55,13 +50,19 @@ task wrapper(type: Wrapper) {
     gradleVersion = '2.6'
 }
 
+def user_home = System.getenv('HOME')
+
+def config_tokens = [
+    user_home_dir: user_home
+]
+
 task expand_web_xml_vars() {
-    description 'Expand user home variable in web.xml'
+    description 'Expand variables in web.xml'
 
     copy {
         from('src/main/webapp/WEB-INF') {
             include 'web.xml'
-            expand(user_home_dir: System.getenv('HOME'))
+            expand(config_tokens)
         }
         into("$buildDir/exploded/WEB-INF")
     }
@@ -74,8 +75,9 @@ task exploded_clean(dependsOn: clean) {
 task exploded_create(type: Copy) {
     description 'Generate exploded war directory for web app'
 
+    // expand vars in web.xml
     filesMatching("**/web.xml") {
-        expand(user_home_dir: System.getenv('HOME'))
+        expand(config_tokens)
     }
 
     into "$buildDir/exploded"
@@ -83,6 +85,20 @@ task exploded_create(type: Copy) {
 }
 
 war.dependsOn exploded_create
+
+war {
+    baseName = 'bldemo'
+    version  = '0.1-SNAPSHOT'
+
+    // expand vars in web.xml
+    from 'src/main/webapp'
+    exclude('WEB-INF/web.xml')
+    webInf {
+        from 'src/main/webapp/WEB-INF/web.xml'
+        expand(config_tokens)
+    }
+    webXml = null
+}
 
 task exploded_update(dependsOn: expand_web_xml_vars) {
     description "Copy jsp and static resource to $buildDir/exploded"
