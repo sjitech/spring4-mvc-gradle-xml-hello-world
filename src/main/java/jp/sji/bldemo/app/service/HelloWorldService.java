@@ -8,26 +8,26 @@ import org.springframework.util.StringUtils;
 @Service
 public class HelloWorldService {
 
-	private static final Logger logger = LoggerFactory.getLogger(HelloWorldService.class);
+    private static final Logger logger = LoggerFactory.getLogger(HelloWorldService.class);
 
-	public String getDesc() {
+    public String getDesc() {
 
-		logger.debug("getDesc() is executed!");
+        logger.debug("getDesc() is executed!");
 
-		return "Gradle + Spring MVC Hello World Example";
+        return "Gradle + Spring MVC web app on Google Cloud Platform";
 
-	}
+    }
 
-	public String getTitle(String name) {
+    public String getTitle(String name) {
 
-		logger.debug("getTitle() is executed! $name : {}", name);
+        logger.debug("getTitle() is executed! $name : {}", name);
 
-		if(StringUtils.isEmpty(name)){
-			return "Hello World";
-		}else{
-			return "Hello " + name;
-		}
-		
-	}
+        if(StringUtils.isEmpty(name)){
+            return "Hello World";
+        }else{
+            return "Hello " + name;
+        }
+
+    }
 
 }

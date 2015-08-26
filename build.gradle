@@ -69,7 +69,7 @@ task expand_web_xml_vars() {
 }
 
 task exploded_clean(dependsOn: clean) {
-    description 'Just wrapper built-in clean task for empty $buildDir'
+    description "Just wrapper built-in clean task for empty $buildDir"
 }
 
 task exploded_create(type: Copy) {

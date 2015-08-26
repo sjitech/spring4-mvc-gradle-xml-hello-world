@@ -11,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 @Controller
@@ -27,7 +26,7 @@ public class FileUploadController {
     }
 
     @RequestMapping(value="/upload", method=RequestMethod.POST)
-    public @ResponseBody String handleFileUpload(
+    public String handleFileUpload(
             @RequestParam("comment") String comment,
             @RequestParam("uploadFile") MultipartFile uploadFile,
             Model model){
@@ -38,20 +37,27 @@ public class FileUploadController {
         model.addAttribute("comment", comment);
 
         if (!uploadFile.isEmpty()) {
+            String filename = uploadFile.getOriginalFilename();
+
             try {
                 byte[] bytes = uploadFile.getBytes();
                 BufferedOutputStream stream =
                         new BufferedOutputStream(new FileOutputStream(new File(comment)));
                 stream.write(bytes);
                 stream.close();
-                return "You successfully uploaded " + comment + "!";
+
+                model.addAttribute("title", "Uploaded file successfully");
+                model.addAttribute("message", "You successfully uploaded " + filename + "!");
+                model.addAttribute("cssColor", "success");
             } catch (Exception e) {
-                return "You failed to upload " + comment + " => " + e.getMessage();
+                model.addAttribute("title", "Upload file failed");
+                model.addAttribute("message", "You failed to upload " + filename + " => " + e.getMessage());
+                model.addAttribute("cssColor", "danger");
             }
         } else {
-            model.addAttribute("title", comment);
-            model.addAttribute("message", comment);
-            model.addAttribute("cssColor", comment);
+            model.addAttribute("title", "No file selected");
+            model.addAttribute("message", "No file was selected to upload.");
+            model.addAttribute("cssColor", "info");
         }
 
         return "result";
