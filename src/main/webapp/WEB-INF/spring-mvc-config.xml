@@ -10,6 +10,7 @@
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context.xsd ">
 
+    <context:component-scan base-package="jp.sji.bldemo.core" />
     <context:component-scan base-package="jp.sji.bldemo.app.web" />
 
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
