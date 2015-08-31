@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,10 +14,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import jp.sji.bldemo.core.config.CoreConfig;
+
 @Controller
 public class FileUploadController {
 
     private final Logger logger = LoggerFactory.getLogger(FileUploadController.class);
+
+    @Autowired
+    protected CoreConfig coreConfig;
 
     @RequestMapping(value="/upload", method=RequestMethod.GET)
     public String provideUploadInfo() {
@@ -39,10 +45,16 @@ public class FileUploadController {
         if (!uploadFile.isEmpty()) {
             String filename = uploadFile.getOriginalFilename();
 
+            logger.debug("origin file name : " + filename);
+
+            String savePath = coreConfig.getUploadSavePath() + "/" + filename;
+
+            logger.debug("save file to " + savePath);
+
             try {
                 byte[] bytes = uploadFile.getBytes();
                 BufferedOutputStream stream =
-                        new BufferedOutputStream(new FileOutputStream(new File(comment)));
+                        new BufferedOutputStream(new FileOutputStream(new File(savePath)));
                 stream.write(bytes);
                 stream.close();
 
