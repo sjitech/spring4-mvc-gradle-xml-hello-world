@@ -22,10 +22,11 @@
     <link href="${bootstrapThemeCss}" rel="stylesheet" />
 </head>
 
+<body>
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
-            <a class="navbar-brand" href="#">Upload file sample</a>
+            <a class="navbar-brand" href="<c:url value='/' />">GCP demo project by spring 4 MVC with Gradle</a>
         </div>
     </div>
 </nav>
@@ -36,8 +37,16 @@
 
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
+            <h3>Upload file sample</h3>
+        </div>
+    </div>
 
-            <form method="post" action="upload" enctype="multipart/form-data">
+    <div class="space-15" ></div>
+
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+
+            <form method="post" action="<c:url value='/upload' />" enctype="multipart/form-data">
               <div class="form-group">
                 <label for="uploadFile">Select file to upload</label>
                 <input type="file" id="uploadFile" name="uploadFile" />

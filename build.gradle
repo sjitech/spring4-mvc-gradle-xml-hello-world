@@ -50,11 +50,20 @@ task wrapper(type: Wrapper) {
     gradleVersion = '2.6'
 }
 
-def user_home = System.getenv('HOME')
+// def user_home = System.getenv('HOME')
 
-def config_tokens = [
-    user_home_dir: user_home
-]
+def env_name = project.hasProperty('env') ? env : 'dev'
+println "Environment is set to $env_name"
+
+def profile_name = env_name
+
+if (env_name == "dev") {
+	profile_name = "" + System.getProperty("user.name")
+	println "profile_name is set to current user $profile_name"
+}
+
+def build_profile_url = file("${projectDir}/build.profile.groovy").toURL()
+def profile_config = new ConfigSlurper(profile_name).parse(build_profile_url)
 
 task expand_web_xml_vars() {
     description 'Expand variables in web.xml'
@@ -62,7 +71,7 @@ task expand_web_xml_vars() {
     copy {
         from('src/main/webapp/WEB-INF') {
             include 'web.xml'
-            expand(config_tokens)
+            expand(profile_config.core.toProperties())
         }
         into("$buildDir/exploded/WEB-INF")
     }
@@ -72,12 +81,28 @@ task exploded_clean(dependsOn: clean) {
     description "Just wrapper built-in clean task for empty $buildDir"
 }
 
+processResources {
+	destinationDir = sourceSets.main.output.classesDir
+
+	filesMatching('**/core.properties') {
+		expand(profile_config.core.toProperties())
+	}
+
+	filesMatching('**/app.properties') {
+		expand(profile_config.app.toProperties())
+	}
+
+	filesMatching('**/log4j2.xml') {
+		filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: profile_config.core.toProperties())
+	}
+}
+
 task exploded_create(type: Copy) {
     description 'Generate exploded war directory for web app'
 
     // expand vars in web.xml
     filesMatching("**/web.xml") {
-        expand(config_tokens)
+        expand(profile_config.core.toProperties())
     }
 
     into "$buildDir/exploded"
@@ -95,7 +120,7 @@ war {
     exclude('WEB-INF/web.xml')
     webInf {
         from 'src/main/webapp/WEB-INF/web.xml'
-        expand(config_tokens)
+        expand(profile_config.core.toProperties())
     }
     webXml = null
 }

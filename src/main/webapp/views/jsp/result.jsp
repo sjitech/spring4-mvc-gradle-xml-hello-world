@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>GCP demo project by spring 4 MVC with Gradle</title>
+    <title>Upload file</title>
 
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -26,59 +26,33 @@
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
-            <a class="navbar-brand" href="#">GCP demo project by spring 4 MVC with Gradle</a>
+            <a class="navbar-brand" href="<c:url value='/' />">GCP demo project by spring 4 MVC with Gradle</a>
         </div>
     </div>
 </nav>
 
-<div class="jumbotron">
-    <div class="container">
-        <h1>${title}</h1>
-        <p>
-            <c:if test="${not empty msg}">
-                Hello ${msg}
-            </c:if>
-
-            <c:if test="${empty msg}">
-                Welcome to spring 4 MVC on Google cloud platform!
-            </c:if>
-        </p>
-    </div>
-</div>
+<div class="space-30" ></div>
 
 <div class="container">
 
+    <div class="space-15" ></div>
+
     <div class="row">
-        <div class="col-md-4">
-            <h2>Upload Sample</h2>
-            <p>Upload one or more files to server.</p>
-            <p>Confirm upload temp directory of servlet container.</p>
-            <p>
-                <a class="btn btn-default" href="<c:url value='/upload' />" role="button">View details</a>
-            </p>
-        </div>
-        <div class="col-md-4">
-            <h2>Heading</h2>
-            <p>ABC</p>
-            <p>
-                <a class="btn btn-default" href="#" role="button">View details</a>
-            </p>
-        </div>
-        <div class="col-md-4">
-            <h2>Heading</h2>
-            <p>ABC</p>
-            <p>
-                <a class="btn btn-default" href="#" role="button">View details</a>
-            </p>
+        <div class="col-md-8 col-md-offset-2">
+
+            <div class="panel panel-${cssColor}">
+		      <div class="panel-heading">
+		        <h3 class="panel-title">${title}</h3>
+		      </div>
+		      <div class="panel-body">
+		        <p>${message}</p>
+		      </div>
+		    </div>
+
         </div>
     </div>
-
-
-    <hr>
-    <footer>
-        <p>&copy; SJI Inc. 2015</p>
-    </footer>
 </div>
+
 
 <spring:url value="/resources/js/jquery-2.1.4.js" var="jqueryJs" />
 <spring:url value="/resources/js/bootstrap.js" var="bootstrapJs" />

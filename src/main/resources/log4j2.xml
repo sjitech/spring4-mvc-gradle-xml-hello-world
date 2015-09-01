@@ -2,7 +2,7 @@
 <Configuration status="debug">
     <Properties>
         <Property name="LOG_FILE_PREFIX">bldemo</Property>
-        <Property name="LOG_DIR">$${env:HOME}/temp/logs</Property>
+        <Property name="LOG_DIR">@log_path@</Property>
     </Properties>
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
