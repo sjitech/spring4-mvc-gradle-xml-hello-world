@@ -36,6 +36,7 @@ dependencies {
     providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
     runtime 'javax.servlet:jstl:1.2'
 
+	compile 'com.google.gcloud:gcloud-java-storage:0.0.7'
 }
 
 eclipse {
@@ -65,7 +66,7 @@ if (env_name == "dev") {
 def build_profile_url = file("${projectDir}/build.profile.groovy").toURL()
 def profile_config = new ConfigSlurper(profile_name).parse(build_profile_url)
 
-task expand_web_xml_vars() {
+task expand_config_tokens() {
     description 'Expand variables in web.xml'
 
     copy {
@@ -75,6 +76,31 @@ task expand_web_xml_vars() {
         }
         into("$buildDir/exploded/WEB-INF")
     }
+
+	copy {
+		from('src/main/resources') {
+			include 'log4j2.xml'
+			filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: profile_config.core.toProperties())
+		}
+		into("$buildDir/exploded/WEB-INF/classes")
+	}
+
+	copy {
+		from('src/main/resources') {
+			include 'core.properties'
+			expand(profile_config.core.toProperties())
+		}
+		into("$buildDir/exploded/WEB-INF/classes")
+	}
+
+	copy {
+		from('src/main/resources') {
+			include 'app.properties'
+			expand(profile_config.app.toProperties())
+		}
+		into("$buildDir/exploded/WEB-INF/classes")
+	}
+
 }
 
 task exploded_clean(dependsOn: clean) {
@@ -125,15 +151,8 @@ war {
     webXml = null
 }
 
-task exploded_update(dependsOn: expand_web_xml_vars) {
+task exploded_update(dependsOn: expand_config_tokens) {
     description "Copy jsp and static resource to $buildDir/exploded"
-
-    copy {
-        from('src/main/resources') {
-            include 'log4j2.xml'
-        }
-        into("$buildDir/exploded/WEB-INF/classes")
-    }
 
     copy {
         from('src/main/webapp') {

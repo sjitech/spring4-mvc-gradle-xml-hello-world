@@ -16,7 +16,7 @@ import jp.sji.bldemo.app.service.HelloWorldService;
 @Controller
 public class WelcomeController {
 
-	private final Logger logger = LoggerFactory.getLogger(WelcomeController.class);
+	private final Logger log = LoggerFactory.getLogger(WelcomeController.class);
 	private final HelloWorldService helloWorldService;
 
 	@Autowired
@@ -27,7 +27,7 @@ public class WelcomeController {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String index(Map<String, Object> model) {
 
-		logger.debug("index() is executed!");
+		log.debug("index() is executed!");
 
 		model.put("title", helloWorldService.getTitle(""));
 		model.put("msg", helloWorldService.getDesc());
@@ -38,7 +38,7 @@ public class WelcomeController {
 	@RequestMapping(value = "/hello/{name:.+}", method = RequestMethod.GET)
 	public ModelAndView hello(@PathVariable("name") String name) {
 
-		logger.debug("hello() is executed - $name {}", name);
+		log.debug("hello() is executed - $name {}", name);
 
 		ModelAndView model = new ModelAndView();
 		model.setViewName("index");

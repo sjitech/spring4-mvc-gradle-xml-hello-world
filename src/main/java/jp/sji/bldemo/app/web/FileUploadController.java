@@ -19,14 +19,14 @@ import jp.sji.bldemo.core.config.CoreConfig;
 @Controller
 public class FileUploadController {
 
-    private final Logger logger = LoggerFactory.getLogger(FileUploadController.class);
+    private final Logger log = LoggerFactory.getLogger(FileUploadController.class);
 
     @Autowired
     protected CoreConfig coreConfig;
 
     @RequestMapping(value="/upload", method=RequestMethod.GET)
     public String provideUploadInfo() {
-        logger.info("show multiple file upload page");
+        log.info("show multiple file upload page");
 
         return "upload";
     }
@@ -36,20 +36,20 @@ public class FileUploadController {
             @RequestParam("comment") String comment,
             @RequestParam("uploadFile") MultipartFile uploadFile,
             Model model){
-        logger.info("process uploaded files");
+        log.info("process uploaded files");
 
-        logger.debug("uploaded : " + comment);
+        log.debug("uploaded : " + comment);
 
         model.addAttribute("comment", comment);
 
         if (!uploadFile.isEmpty()) {
             String filename = uploadFile.getOriginalFilename();
 
-            logger.debug("origin file name : " + filename);
+            log.debug("origin file name : " + filename);
 
             String savePath = coreConfig.getUploadSavePath() + "/" + filename;
 
-            logger.debug("save file to " + savePath);
+            log.debug("save file to " + savePath);
 
             try {
                 byte[] bytes = uploadFile.getBytes();
