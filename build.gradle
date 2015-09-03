@@ -36,7 +36,11 @@ dependencies {
     providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
     runtime 'javax.servlet:jstl:1.2'
 
-	compile 'com.google.gcloud:gcloud-java-storage:0.0.7'
+	// google api clients
+	compile 'com.google.apis:google-api-services-storage:v1-rev41-1.20.0'
+	compile 'com.google.api-client:google-api-client:1.20.0'
+	compile 'com.google.api-client:google-api-client-java6:1.20.0'
+
 }
 
 eclipse {
@@ -91,6 +95,13 @@ task expand_config_tokens() {
 			expand(profile_config.core.toProperties())
 		}
 		into("$buildDir/exploded/WEB-INF/classes")
+	}
+
+	copy {
+		from('src/main/webapp/WEB-INF') {
+			include 'spring-*.xml'
+		}
+		into("$buildDir/exploded/WEB-INF")
 	}
 
 	copy {

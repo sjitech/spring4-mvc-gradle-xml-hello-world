@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import jp.sji.bldemo.app.service.FileUploadService;
 import jp.sji.bldemo.core.config.CoreConfig;
 
 @Controller
@@ -23,6 +24,9 @@ public class FileUploadController {
 
     @Autowired
     protected CoreConfig coreConfig;
+
+    @Autowired
+    protected FileUploadService fileUploadService;
 
     @RequestMapping(value="/upload", method=RequestMethod.GET)
     public String provideUploadInfo() {
@@ -57,6 +61,8 @@ public class FileUploadController {
                         new BufferedOutputStream(new FileOutputStream(new File(savePath)));
                 stream.write(bytes);
                 stream.close();
+
+                fileUploadService.saveUploadedFileToCloud(savePath);
 
                 model.addAttribute("title", "Uploaded file successfully");
                 model.addAttribute("message", "You successfully uploaded " + filename + "!");
