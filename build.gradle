@@ -36,10 +36,11 @@ dependencies {
     providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
     runtime 'javax.servlet:jstl:1.2'
 
-	// google api clients
-	compile 'com.google.apis:google-api-services-storage:v1-rev41-1.20.0'
-	compile 'com.google.api-client:google-api-client:1.20.0'
-	compile 'com.google.api-client:google-api-client-java6:1.20.0'
+    // google api clients
+    compile 'com.google.apis:google-api-services-storage:v1-rev41-1.20.0'
+    compile 'com.google.api-client:google-api-client:1.20.0'
+    compile 'com.google.api-client:google-api-client-java6:1.20.0'
+    compile 'com.google.oauth-client:google-oauth-client-jetty:1.20.0'
 
 }
 
@@ -63,8 +64,8 @@ println "Environment is set to $env_name"
 def profile_name = env_name
 
 if (env_name == "dev") {
-	profile_name = "" + System.getProperty("user.name")
-	println "profile_name is set to current user $profile_name"
+    profile_name = "" + System.getProperty("user.name")
+    println "profile_name is set to current user $profile_name"
 }
 
 def build_profile_url = file("${projectDir}/build.profile.groovy").toURL()
@@ -81,36 +82,36 @@ task expand_config_tokens() {
         into("$buildDir/exploded/WEB-INF")
     }
 
-	copy {
-		from('src/main/resources') {
-			include 'log4j2.xml'
-			filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: profile_config.core.toProperties())
-		}
-		into("$buildDir/exploded/WEB-INF/classes")
-	}
+    copy {
+        from('src/main/resources') {
+            include 'log4j2.xml'
+            filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: profile_config.core.toProperties())
+        }
+        into("$buildDir/exploded/WEB-INF/classes")
+    }
 
-	copy {
-		from('src/main/resources') {
-			include 'core.properties'
-			expand(profile_config.core.toProperties())
-		}
-		into("$buildDir/exploded/WEB-INF/classes")
-	}
+    copy {
+        from('src/main/resources') {
+            include 'core.properties'
+            expand(profile_config.core.toProperties())
+        }
+        into("$buildDir/exploded/WEB-INF/classes")
+    }
 
-	copy {
-		from('src/main/webapp/WEB-INF') {
-			include 'spring-*.xml'
-		}
-		into("$buildDir/exploded/WEB-INF")
-	}
+    copy {
+        from('src/main/webapp/WEB-INF') {
+            include 'spring-*.xml'
+        }
+        into("$buildDir/exploded/WEB-INF")
+    }
 
-	copy {
-		from('src/main/resources') {
-			include 'app.properties'
-			expand(profile_config.app.toProperties())
-		}
-		into("$buildDir/exploded/WEB-INF/classes")
-	}
+    copy {
+        from('src/main/resources') {
+            include 'app.properties'
+            expand(profile_config.app.toProperties())
+        }
+        into("$buildDir/exploded/WEB-INF/classes")
+    }
 
 }
 
@@ -119,19 +120,19 @@ task exploded_clean(dependsOn: clean) {
 }
 
 processResources {
-	destinationDir = sourceSets.main.output.classesDir
+    destinationDir = sourceSets.main.output.classesDir
 
-	filesMatching('**/core.properties') {
-		expand(profile_config.core.toProperties())
-	}
+    filesMatching('**/core.properties') {
+        expand(profile_config.core.toProperties())
+    }
 
-	filesMatching('**/app.properties') {
-		expand(profile_config.app.toProperties())
-	}
+    filesMatching('**/app.properties') {
+        expand(profile_config.app.toProperties())
+    }
 
-	filesMatching('**/log4j2.xml') {
-		filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: profile_config.core.toProperties())
-	}
+    filesMatching('**/log4j2.xml') {
+        filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: profile_config.core.toProperties())
+    }
 }
 
 task exploded_create(type: Copy) {

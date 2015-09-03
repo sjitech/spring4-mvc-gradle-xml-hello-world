@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.java6.auth.oauth2.VerificationCodeReceiver;
+import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.extensions.java6.auth.oauth2.GooglePromptReceiver;
@@ -46,146 +47,149 @@ import jp.sji.bldemo.core.config.CoreConfig;
 @Component
 public class StorageClient {
 
-	private final static Logger log = LoggerFactory.getLogger(StorageClient.class);
+    private final static Logger log = LoggerFactory.getLogger(StorageClient.class);
 
-	@Autowired
-	protected CoreConfig coreConfig;
+    @Autowired
+    protected CoreConfig coreConfig;
 
-	/** Global instance of the JSON factory. */
-	private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
+    /** Global instance of the JSON factory. */
+    private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
-	/**
-	 * Global instance of the {@link DataStoreFactory}. The best practice is to
-	 * make it a single globally shared instance across your application.
-	 */
-	private static FileDataStoreFactory dataStoreFactory;
+    private static final boolean AUTH_LOCAL_WEBSERVER = true;
 
-	/** Global instance of the HTTP transport. */
-	private static HttpTransport httpTransport;
+    /**
+     * Global instance of the {@link DataStoreFactory}. The best practice is to
+     * make it a single globally shared instance across your application.
+     */
+    private static FileDataStoreFactory dataStoreFactory;
 
-	private static Storage client;
+    /** Global instance of the HTTP transport. */
+    private static HttpTransport httpTransport;
 
-	/** Authorizes the installed application to access user's protected data. */
-	public Credential authorize() throws Exception {
-		// Load client secrets.
-		GoogleClientSecrets clientSecrets = null;
+    private static Storage client;
 
-		String clientSecretsFile = coreConfig.getStringValue("gcp_auth_data_dir") + "/"
-				+ coreConfig.getStringValue("gcp_client_secret_filename");
+    /** Authorizes the installed application to access user's protected data. */
+    public Credential authorize() throws Exception {
+        // Load client secrets.
+        GoogleClientSecrets clientSecrets = null;
 
-		log.debug("load google client secret file: " + clientSecretsFile);
+        String clientSecretsFile = coreConfig.getStringValue("gcp_auth_data_dir") + "/"
+                + coreConfig.getStringValue("gcp_client_secret_filename");
 
-		try {
+        log.debug("load google client secret file: " + clientSecretsFile);
 
-			clientSecrets = GoogleClientSecrets.load(JSON_FACTORY,
-					new InputStreamReader(new FileInputStream(clientSecretsFile)));
-			if (clientSecrets.getDetails().getClientId() == null
-					|| clientSecrets.getDetails().getClientSecret() == null) {
-				throw new Exception("client_secrets not well formed.");
-			}
-		} catch (Exception e) {
-			log.error("error on loading client secret file: " + clientSecretsFile, e);
-			throw e;
-		}
+        try {
 
-		// Set up authorization code flow.
-		// Ask for only the permissions you need. Asking for more permissions
-		// will
-		// reduce the number of users who finish the process for giving you
-		// access
-		// to their accounts. It will also increase the amount of effort you
-		// will
-		// have to spend explaining to users what you are doing with their data.
-		// Here we are listing all of the available scopes. You should remove
-		// scopes
-		// that you are not actually using.
-		Set<String> scopes = new HashSet<String>();
-		scopes.add(StorageScopes.DEVSTORAGE_FULL_CONTROL);
-		scopes.add(StorageScopes.DEVSTORAGE_READ_ONLY);
-		scopes.add(StorageScopes.DEVSTORAGE_READ_WRITE);
+            clientSecrets = GoogleClientSecrets.load(JSON_FACTORY,
+                    new InputStreamReader(new FileInputStream(clientSecretsFile)));
+            if (clientSecrets.getDetails().getClientId() == null
+                    || clientSecrets.getDetails().getClientSecret() == null) {
+                throw new Exception("client_secrets not well formed.");
+            }
+        } catch (Exception e) {
+            log.error("error on loading client secret file: " + clientSecretsFile, e);
+            throw e;
+        }
 
-		dataStoreFactory = new FileDataStoreFactory(new File(coreConfig.getStringValue("gcp_auth_data_dir")));
+        // Set up authorization code flow.
+        // Ask for only the permissions you need. Asking for more permissions
+        // will
+        // reduce the number of users who finish the process for giving you
+        // access
+        // to their accounts. It will also increase the amount of effort you
+        // will
+        // have to spend explaining to users what you are doing with their data.
+        // Here we are listing all of the available scopes. You should remove
+        // scopes
+        // that you are not actually using.
+        Set<String> scopes = new HashSet<String>();
+        scopes.add(StorageScopes.DEVSTORAGE_FULL_CONTROL);
+        scopes.add(StorageScopes.DEVSTORAGE_READ_ONLY);
+        scopes.add(StorageScopes.DEVSTORAGE_READ_WRITE);
 
-		GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY,
-				clientSecrets, scopes).setDataStoreFactory(dataStoreFactory).build();
+        dataStoreFactory = new FileDataStoreFactory(new File(coreConfig.getStringValue("gcp_auth_data_dir")));
 
-		// Authorize.
-		VerificationCodeReceiver receiver = new GooglePromptReceiver();
-		return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
-	}
+        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY,
+                clientSecrets, scopes).setDataStoreFactory(dataStoreFactory).build();
 
-	public void list(String bucketName) throws Exception {
-		log.info("show content of bucket: " + bucketName);
+        // Authorize.
+        VerificationCodeReceiver receiver =
+                AUTH_LOCAL_WEBSERVER ? new LocalServerReceiver() : new GooglePromptReceiver();
+        return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
+    }
 
-		dataStoreFactory = new FileDataStoreFactory(new File(coreConfig.getStringValue("gcp_auth_data_dir")));
-		httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    public void list(String bucketName) throws Exception {
+        log.info("show content of bucket: " + bucketName);
 
-		// Authorization.
-		Credential credential = authorize();
+        dataStoreFactory = new FileDataStoreFactory(new File(coreConfig.getStringValue("gcp_auth_data_dir")));
+        httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 
-		String appName = coreConfig.getStringValue("gcp_storage_bucket_name");
+        // Authorization.
+        Credential credential = authorize();
 
-		// Set up global Storage instance.
-		client = new Storage.Builder(httpTransport, JSON_FACTORY, credential).setApplicationName(appName).build();
+        String appName = coreConfig.getStringValue("gcp_storage_bucket_name");
 
-
-		// Get metadata about the specified bucket.
-		Storage.Buckets.Get getBucket = client.buckets().get(bucketName);
-		getBucket.setProjection("full");
-		Bucket bucket = getBucket.execute();
-
-		log.debug("name: " + bucketName);
-		log.debug("location: " + bucket.getLocation());
-		log.debug("timeCreated: " + bucket.getTimeCreated());
-		log.debug("owner: " + bucket.getOwner());
+        // Set up global Storage instance.
+        client = new Storage.Builder(httpTransport, JSON_FACTORY, credential).setApplicationName(appName).build();
 
 
-		// List the contents of the bucket.
-		Storage.Objects.List listObjects = client.objects().list(bucketName);
-		Objects objects;
+        // Get metadata about the specified bucket.
+        Storage.Buckets.Get getBucket = client.buckets().get(bucketName);
+        getBucket.setProjection("full");
+        Bucket bucket = getBucket.execute();
 
-		do {
-			objects = listObjects.execute();
-			List<StorageObject> items = objects.getItems();
+        log.debug("name: " + bucketName);
+        log.debug("location: " + bucket.getLocation());
+        log.debug("timeCreated: " + bucket.getTimeCreated());
+        log.debug("owner: " + bucket.getOwner());
 
-			if (null == items) {
-				log.debug("There were no objects in the given bucket; try adding some and re-running.");
-				break;
-			}
 
-			for (StorageObject object : items) {
-				log.debug(object.getName() + " (" + object.getSize() + " bytes)");
-			}
+        // List the contents of the bucket.
+        Storage.Objects.List listObjects = client.objects().list(bucketName);
+        Objects objects;
 
-			listObjects.setPageToken(objects.getNextPageToken());
-		} while (null != objects.getNextPageToken());
-	}
+        do {
+            objects = listObjects.execute();
+            List<StorageObject> items = objects.getItems();
 
-	public StorageObject upload(String localFilePath) throws Exception {
-		String appName = coreConfig.getStringValue("gcp_storage_bucket_name");
-		String bucketName = coreConfig.getStringValue("gcp_storage_bucket_name");
+            if (null == items) {
+                log.debug("There were no objects in the given bucket; try adding some and re-running.");
+                break;
+            }
 
-		log.info("Upload file " + localFilePath + " to bucket: " + bucketName);
+            for (StorageObject object : items) {
+                log.debug(object.getName() + " (" + object.getSize() + " bytes)");
+            }
 
-		dataStoreFactory = new FileDataStoreFactory(new File(coreConfig.getStringValue("gcp_auth_data_dir")));
-		httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+            listObjects.setPageToken(objects.getNextPageToken());
+        } while (null != objects.getNextPageToken());
+    }
 
-		// Authorization.
-		Credential credential = authorize();
+    public StorageObject upload(String localFilePath) throws Exception {
+        String appName = coreConfig.getStringValue("gcp_storage_bucket_name");
+        String bucketName = coreConfig.getStringValue("gcp_storage_bucket_name");
 
-		// Set up global Storage instance.
-		client = new Storage.Builder(httpTransport, JSON_FACTORY, credential).setApplicationName(appName).build();
+        log.info("Upload file " + localFilePath + " to bucket: " + bucketName);
 
-		final String contentType = "application/octet-stream";
+        dataStoreFactory = new FileDataStoreFactory(new File(coreConfig.getStringValue("gcp_auth_data_dir")));
+        httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 
-		InputStreamContent mediaContent = new InputStreamContent(contentType, new FileInputStream(localFilePath));
+        // Authorization.
+        Credential credential = authorize();
 
-		Path path = FileSystems.getDefault().getPath(localFilePath);
-		Insert insertObject = client.objects().insert(bucketName, null, mediaContent)
-		        .setName(path.getFileName().toString());
-		insertObject.getMediaHttpUploader().setDisableGZipContent(true);
+        // Set up global Storage instance.
+        client = new Storage.Builder(httpTransport, JSON_FACTORY, credential).setApplicationName(appName).build();
 
-		return insertObject.execute();
-	}
+        final String contentType = "application/octet-stream";
+
+        InputStreamContent mediaContent = new InputStreamContent(contentType, new FileInputStream(localFilePath));
+
+        Path path = FileSystems.getDefault().getPath(localFilePath);
+        Insert insertObject = client.objects().insert(bucketName, null, mediaContent)
+                .setName(path.getFileName().toString());
+        insertObject.getMediaHttpUploader().setDisableGZipContent(true);
+
+        return insertObject.execute();
+    }
 
 }
