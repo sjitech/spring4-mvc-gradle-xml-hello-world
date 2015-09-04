@@ -55,7 +55,7 @@ public class StorageClient {
     /** Global instance of the JSON factory. */
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
-    private static final boolean AUTH_LOCAL_WEBSERVER = true;
+    private static final boolean AUTH_LOCAL_WEBSERVER = false;
 
     /**
      * Global instance of the {@link DataStoreFactory}. The best practice is to
@@ -127,7 +127,7 @@ public class StorageClient {
         // Authorization.
         Credential credential = authorize();
 
-        String appName = coreConfig.getStringValue("gcp_storage_bucket_name");
+        String appName = coreConfig.getStringValue("gcp_project_name");
 
         // Set up global Storage instance.
         client = new Storage.Builder(httpTransport, JSON_FACTORY, credential).setApplicationName(appName).build();
@@ -166,7 +166,7 @@ public class StorageClient {
     }
 
     public StorageObject upload(String localFilePath) throws Exception {
-        String appName = coreConfig.getStringValue("gcp_storage_bucket_name");
+        String appName = coreConfig.getStringValue("gcp_project_name");
         String bucketName = coreConfig.getStringValue("gcp_storage_bucket_name");
 
         log.info("Upload file " + localFilePath + " to bucket: " + bucketName);

@@ -29,6 +29,9 @@
             <AppenderRef ref="Console"/>
             <AppenderRef ref="AsyncRollingFile"/>
         </Root>
+        <Logger name="com.google.api.client.googleapis" level="debug" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
         <Logger name="jp.sji.bldemo" level="trace" additivity="false">
             <AppenderRef ref="Console"/>
             <AppenderRef ref="AsyncRollingFile"/>

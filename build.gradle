@@ -149,6 +149,10 @@ task exploded_create(type: Copy) {
 
 war.dependsOn exploded_create
 
+task exploded_clean_create(dependsOn: [exploded_clean, exploded_create]) {
+	description "Cleanup and regenerate exploded war directory : $buildDir/exploded"
+}
+
 war {
     baseName = 'bldemo'
     version  = '0.1-SNAPSHOT'
