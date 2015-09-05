@@ -7,8 +7,12 @@ core {
 
     gcp_auth_data_dir = System.getProperty("user.home") + "/work/gcp-config"
     gcp_client_secret_filename = "client_secret_10838234188-d59ibeotidu52u7cvp2pc4bbdmg5j4l5.apps.googleusercontent.com.json"
-    gcp_project_name = "DemoProject"
+    gcp_oauth_app_name = "bldemo"
     gcp_storage_bucket_name = "springmvc-demp-upload-temp"
+
+    gcp_auth_p12_file = "DemoProject-cc7a1b9d38c4.p12"
+    gcp_auth_p12_pwd  = "notasecret"
+    gcp_auth_service_account_email = "10838234188-5etclhgm08hdvcv78mb94l1i7c3pr6ke@developer.gserviceaccount.com"
 
     env_name         = "dev"
 }
@@ -28,6 +32,7 @@ environments {
         core {
             gcp_auth_data_dir = System.getProperty("user.home") + "/work/gcp"
             gcp_client_secret_filename = "client_secret_10838234188-mdlh7ol37tcgba6nittc3feb2ustgh7t.apps.googleusercontent.com.json"
+
         }
 
     }
