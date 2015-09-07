@@ -10,9 +10,10 @@ core {
     gcp_oauth_app_name = "bldemo"
     gcp_storage_bucket_name = "springmvc-demp-upload-temp"
 
-    gcp_auth_p12_file = "DemoProject-cc7a1b9d38c4.p12"
+
+    gcp_auth_p12_file = "DemoProject-ee78999ca2f1.p12"
     gcp_auth_p12_pwd  = "notasecret"
-    gcp_auth_service_account_email = "10838234188-5etclhgm08hdvcv78mb94l1i7c3pr6ke@developer.gserviceaccount.com"
+    gcp_auth_service_account_email = "10838234188-vflpvhq4j009m9r8le0dmiktd1btgrl4@developer.gserviceaccount.com"
 
     env_name         = "dev"
 }
@@ -31,6 +32,8 @@ environments {
     whd {
         core {
             gcp_auth_data_dir = System.getProperty("user.home") + "/work/gcp"
+
+			gcp_auth_p12_file = "DemoProject-cc7a1b9d38c4.p12"
             gcp_client_secret_filename = "client_secret_10838234188-mdlh7ol37tcgba6nittc3feb2ustgh7t.apps.googleusercontent.com.json"
 
         }
